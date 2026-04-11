@@ -10,29 +10,31 @@
  * };
  */
 
+
+
 class Solution {
 public:
     bool isBalanced(TreeNode* root) {
-        return dfs(root).first == true;
+        return subTreeBalanced(root).second;
     }
 
-    pair<bool, int> dfs(TreeNode* root) {
+    pair<int, bool> subTreeBalanced (TreeNode* root) {
         if (!root) {
-            return {true, 0};
+            return {0, true};
         }
 
-        auto left = dfs(root->left);
-        auto right = dfs(root->right);
+        // Get information from children (balance/height)
 
-        bool balanced = false;
-        if ((left.first && right.first) && (abs(left.second - right.second) <= 1)) {
-            balanced = true;
+        auto left = subTreeBalanced(root->left);
+        auto right = subTreeBalanced(root->right);
+
+        // Calculate whether this node is balanced based on the children
+        if (!left.second || !right.second || abs(left.first - right.first) > 1) {
+            return {max(left.first, right.first) + 1, false,};
         }
 
-        int height = 1 + max(left.second, right.second);
+        return {max(left.first, right.first) + 1, true};
 
-
-        return {balanced, height};
     }
 
 };
